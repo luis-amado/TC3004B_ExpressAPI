@@ -21,8 +21,12 @@ export const postItem = async (req, res) => {
     .request()
     .input('name', sql.VarChar, req.body.name)
     .input('price', sql.Int, req.body.price)
-    .query('INSERT INTO items (name, price) VALUES (@name, @price)');
-  res.status(200).json({ message: 'Insert successful' });
+    .query(
+      'INSERT INTO items (name, price) OUTPUT Inserted.* VALUES (@name, @price)'
+    );
+  res
+    .status(200)
+    .json({ message: 'Insert successful', item: data.recordset[0] });
 };
 
 export const putItem = async (req, res) => {
